@@ -2,21 +2,24 @@ function Main(props){
   return (
     <section className="container activity-section flex">
       {
-        props.activityList.map(activity => (
-          <article key={activity.activity} className="activity">
-            <div className="activity-info-container flex">
-              <h3 className="activity-heading">{activity.activity}</h3>
-              <p className="month">{activity.month}</p>
-            </div>
-            <ul className="dates-menu flex">
-              {
-                Object.keys(activity.days).map(day => (
-                  <li onClick={props.markDate} key={day} className="date-box">{day}</li>
-                ))
-              }
-            </ul>
-          </article>
-        ))
+        props.activityList.map(activity => {
+          return (
+            <article key={activity.activity} className="activity">
+              <div className="activity-info-container flex">
+                <h3 className="activity-heading">{activity.activity}</h3>
+                <p className="month">{activity.month}</p>
+              </div>
+              <ul className="dates-menu flex">
+                {
+                  activity.days.map(day => {
+                    return <li onClick={(event) => props.markDate(activity, event)} key={day.id} className={day.isDone ? "date-box active" : "date-box"}>{day.id}</li>
+                  })
+                }
+              </ul>
+              <button onClick={() => props.deleteActivity(activity)} className="delete">X</button>
+            </article>
+          )
+        })
       }
     </section>
   )
@@ -64,4 +67,23 @@ export default Main;
           <li className="date-box">31</li>
         </ul>
       </article>
+
+      {
+        props.activityList.map(activity => (
+          <article key={activity.activity} className="activity">
+            <div className="activity-info-container flex">
+              <h3 className="activity-heading">{activity.activity}</h3>
+              <p className="month">{activity.month}</p>
+            </div>
+            <ul className="dates-menu flex">
+              {
+                Object.keys(activity.days).map((day,index) => {
+                  let idx = index + 1;
+                  return <li onClick={(event) => props.markDate(activity, event)} key={day} className="date-box">{idx}</li>
+                })
+              }
+            </ul>
+          </article>
+        ))
+      }
 */

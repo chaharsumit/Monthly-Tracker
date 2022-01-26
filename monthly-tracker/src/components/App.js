@@ -31,13 +31,15 @@ class App extends React.Component{
 
   generateDays = () => {
     let days = [];
+    let i = 1;
     let max_days = this.getDaysInMonth();
     while(max_days){
       days.push({
-        id: max_days - (max_days - 1),
+        id: i,
         isDone: false
       })
       max_days--;
+      i++;
     }
     return days;
   }
@@ -55,18 +57,52 @@ class App extends React.Component{
     })
   }
 
-  markDate = () => {
-    console.log('puta');
+  changeDayStatus = (days, value) => {
+    days = days.reduce((acc, curr) => {
+      if(curr.id === Number(value)){
+        curr.isDone = !curr.isDone;
+        acc = acc.concat(curr);
+      }else{
+        acc = acc.concat(curr);
+      }
+      return acc;
+    }, []);
+    return days;
+  }
+
+  markDate = (activity, event) => {
+    let arr = this.state.activities;
+    let updatedArr = arr.reduce((acc, curr) => {
+      if(curr.activity === activity.activity){
+        curr.days = this.changeDayStatus(curr.days, event.target.innerText);
+        acc = acc.concat(curr);
+      }else{
+        acc = acc.concat(curr);
+      }
+      return acc;
+    }, []);
+    this.setState((prevState) => {
+      return {
+        activities: updatedArr
+      }
+    })
+  }
+
+  deleteActivity = (activity) => {
+    let arr = this.state.activities;
+    let pos = arr.indexOf(activity);
+    arr.splice(pos, 1);
+    this.setState({
+      activities: arr
+    })
   }
 
   render(){
-    let days = this.getDaysInMonth();
-    let month = this.getCurrentMonth();
     return (
       <>
         <Header />
         <Form handleSubmit={this.handleSubmit} inputVal={this.state.inputVal} handleInput={this.handleInput} />
-        <Main markDate={this.markDate} activityList={this.state.activities} />
+        <Main deleteActivity={this.deleteActivity} markDate={this.markDate} activityList={this.state.activities} />
       </>
     )
   }
